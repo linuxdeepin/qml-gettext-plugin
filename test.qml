@@ -5,14 +5,22 @@ import QtQuick.Controls 1.0
 Item {
     DLocale {
         id:t
-        domain:"DDE"
-        localeALL: "zh_CN.UTF-8"
+        domain:"DDE" //mo file path set man 3 dgettext
+        //localeALL: "zh_CN.UTF-8"
+        localeMESSAGES: "zh_CN.UTF-8"
     }
     function dsTr(s) { return t.dsTr(s) }
 
-    Text {
-        id: x
-        text: dsTr("guest")
+    Column {
+        width: 200
+        height: 200
+        Text {
+            text: "Current locale TIME :" + t.localeTIME
+        }
+        Text {
+            id: x
+            text: dsTr("guest")
+        }
+        SubItem { } //test submodule use dsTr
     }
-    SubItem { anchors.top: x.bottom}
 }

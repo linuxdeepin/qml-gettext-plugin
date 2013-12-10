@@ -1,6 +1,6 @@
 /*This file is auto generate by dlib/dbus/proxyer. Don't edit it*/
-#include <QObject>
 #include <libintl.h>
+#include <QObject>
 
 #ifndef __LOCALE_H__
 #define __LOCALE_H__
@@ -55,13 +55,13 @@ public:
 	 setlocale(LC_ALL, "");
     }
 
-    const QString localeALL() { }
-    const QString localeCOLLATE() { }
-    const QString localeCTYPE() { }
-    const QString localeMESSAGES() { }
-    const QString localeMONETARY() { }
-    const QString localeNUMERIC() { }
-    const QString localeTIME() { }
+    const QString localeALL() { return setlocale(LC_ALL, 0); }
+    const QString localeCOLLATE() { return setlocale(LC_COLLATE, 0); }
+    const QString localeCTYPE() { return setlocale(LC_CTYPE, 0); }
+    const QString localeMESSAGES() { return setlocale(LC_MESSAGES, 0); }
+    const QString localeMONETARY() { return setlocale(LC_MONETARY, 0); }
+    const QString localeNUMERIC() { return setlocale(LC_NUMERIC, 0); }
+    const QString localeTIME() { return setlocale(LC_TIME, 0); }
 
     void setALL(const QString& locale) {
         setlocale(LC_ALL, locale.toLocal8Bit());
@@ -73,7 +73,7 @@ public:
         setlocale(LC_CTYPE, locale.toLocal8Bit());
     }
     void setMESSAGES(const QString& locale) {
-        setlocale(LC_MESSAGES, locale.toLocal8Bit());
+        QString(setlocale(LC_MESSAGES, locale.toLocal8Bit()));
     }
     void setMONETARY(const QString& locale) {
         setlocale(LC_MONETARY, locale.toLocal8Bit());
