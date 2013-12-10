@@ -29,6 +29,7 @@ public:
         //LC_TIME
 
     Q_PROPERTY(QString domain READ domain WRITE setDomain NOTIFY domainChanged)
+    Q_PROPERTY(QString dirname READ dirname WRITE setDirname NOTIFY dirnameChanged)
 
     Q_PROPERTY(QString localeALL READ localeALL WRITE setALL NOTIFY localeALLChanged)
     Q_PROPERTY(QString localeCOLLATE READ localeCOLLATE WRITE setCOLLATE NOTIFY localeCOLLATEChanged)
@@ -42,7 +43,16 @@ public:
         return m_domain;
     }
     void setDomain (const QString& s) {
-        m_domain= s;
+        m_domain = s;
+	if (m_dirname.size() != 0) {
+	    bindtextdomain(m_domain.toLocal8Bit(), m_dirname.toLocal8Bit());
+	}
+    }
+    void setDirname (const QString& s) {
+	m_dirname = s;
+    }
+    const QString dirname() {
+	return m_dirname;
     }
 
     Q_INVOKABLE const QString dsTr(const QString & msgId) {
@@ -86,7 +96,6 @@ public:
     }
 
 
-    Q_SIGNAL void domainChanged(const QString&);
     Q_SIGNAL void localeALLChanged(const QString&);
     Q_SIGNAL void localeCOLLATEChanged(const QString&);
     Q_SIGNAL void localeCTYPEChanged(const QString&);
@@ -94,8 +103,12 @@ public:
     Q_SIGNAL void localeMONETARYChanged(const QString&);
     Q_SIGNAL void localeNUMERICChanged(const QString&);
     Q_SIGNAL void localeTIMEChanged(const QString&);
+
+    Q_SIGNAL void domainChanged(const QString&);
+    Q_SIGNAL void dirnameChanged(const QString&);
 private:
     QString m_domain;
+    QString m_dirname;
 };
 
 #endif
