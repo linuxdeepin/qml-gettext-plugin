@@ -1,6 +1,6 @@
 /*This file is auto generate by dlib/dbus/proxyer. Don't edit it*/
 #include <libintl.h>
-#include <QObject>
+#include <QtCore>
 
 #ifndef __LOCALE_H__
 #define __LOCALE_H__
@@ -29,7 +29,7 @@ public:
         //LC_TIME
 
     Q_PROPERTY(QString domain READ domain WRITE setDomain NOTIFY domainChanged)
-    Q_PROPERTY(QString dirname READ dirname WRITE setDirname NOTIFY dirnameChanged)
+    Q_PROPERTY(QUrl dirname READ dirname WRITE setDirname NOTIFY dirnameChanged)
     Q_PROPERTY(QString lang READ guestLang)
 
     Q_PROPERTY(QString localeALL READ localeALL WRITE setALL NOTIFY localeALLChanged)
@@ -40,21 +40,36 @@ public:
     Q_PROPERTY(QString localeNUMERIC READ localeNUMERIC WRITE setNUMERIC NOTIFY localeNUMERICChanged)
     Q_PROPERTY(QString localeTIME READ localeTIME WRITE setTIME NOTIFY localeTIMEChanged)
 
+
     const QString domain() {
         return m_domain;
     }
     void setDomain (const QString& s) {
-        m_domain = s;
-	if (m_dirname.size() != 0) {
-	    bindtextdomain(m_domain.toLocal8Bit(), m_dirname.toLocal8Bit());
+	if (!s.isEmpty()) {
+	    m_domain = s;
+	} else {
+	    qDebug () << "d-gettext: Ignore an empty domain name!";
 	}
     }
-    void setDirname (const QString& s) {
-	m_dirname = s;
-    }
+
     const QString dirname() {
 	return m_dirname;
     }
+    void setDirname (const QUrl& s) {
+	if (s.isLocalFile()) {
+	    m_dirname = s.path();
+	    bindtextdomain(m_domain.toLocal8Bit(), m_dirname.toLocal8Bit());
+	} else {
+	    qDebug () << "d-gettext: Dirname is not supported non-local file";
+	}
+    }
+
+    DLocale(QObject* parent=0)
+        : QObject(parent)
+    {
+	 setlocale(LC_ALL, "");
+    }
+
 
     Q_INVOKABLE const QString dsTr(const QString & msgId) {
         return dgettext(m_domain.toLocal8Bit(), msgId.toLocal8Bit());
@@ -84,11 +99,6 @@ public:
 	return lang.mid(0, index);
     }
 
-    DLocale(QObject* parent=0)
-        : QObject(parent)
-    {
-	 setlocale(LC_ALL, "");
-    }
 
     const QString localeALL() { return setlocale(LC_ALL, 0); }
     const QString localeCOLLATE() { return setlocale(LC_COLLATE, 0); }
@@ -121,16 +131,17 @@ public:
     }
 
 
-    Q_SIGNAL void localeALLChanged(const QString&);
-    Q_SIGNAL void localeCOLLATEChanged(const QString&);
-    Q_SIGNAL void localeCTYPEChanged(const QString&);
-    Q_SIGNAL void localeMESSAGESChanged(const QString&);
-    Q_SIGNAL void localeMONETARYChanged(const QString&);
-    Q_SIGNAL void localeNUMERICChanged(const QString&);
-    Q_SIGNAL void localeTIMEChanged(const QString&);
+Q_SIGNALS:
+    void localeALLChanged(const QString&);
+    void localeCOLLATEChanged(const QString&);
+    void localeCTYPEChanged(const QString&);
+    void localeMESSAGESChanged(const QString&);
+    void localeMONETARYChanged(const QString&);
+    void localeNUMERICChanged(const QString&);
+    void localeTIMEChanged(const QString&);
 
-    Q_SIGNAL void domainChanged(const QString&);
-    Q_SIGNAL void dirnameChanged(const QString&);
+    void domainChanged(const QString&);
+    void dirnameChanged(const QUrl&);
 private:
     QString m_domain;
     QString m_dirname;
