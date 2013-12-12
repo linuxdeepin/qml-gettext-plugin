@@ -30,6 +30,7 @@ public:
 
     Q_PROPERTY(QString domain READ domain WRITE setDomain NOTIFY domainChanged)
     Q_PROPERTY(QString dirname READ dirname WRITE setDirname NOTIFY dirnameChanged)
+    Q_PROPERTY(QString lang READ guestLang)
 
     Q_PROPERTY(QString localeALL READ localeALL WRITE setALL NOTIFY localeALLChanged)
     Q_PROPERTY(QString localeCOLLATE READ localeCOLLATE WRITE setCOLLATE NOTIFY localeCOLLATEChanged)
@@ -59,6 +60,30 @@ public:
         return dgettext(m_domain.toLocal8Bit(), msgId.toLocal8Bit());
     }
 
+    const QString guestLang() {
+	QString lang = qgetenv("LANGUAGE");
+	if (lang.isEmpty()) {
+	    lang = localeMESSAGES();
+	    if (lang.isEmpty()) {
+		lang = qgetenv("LANG");
+	    }
+	}
+	if (lang.isEmpty()) {
+	    return "en";
+	}
+	int index = lang.indexOf("_");
+	if (index == -1) {
+	    lang.indexOf(".");
+	    if (index == -1) {
+		lang.indexOf("@");
+		if (index == -1) {
+		    return lang;
+		}
+	    }
+	}
+	return lang.mid(0, index);
+    }
+
     DLocale(QObject* parent=0)
         : QObject(parent)
     {
@@ -83,7 +108,7 @@ public:
         setlocale(LC_CTYPE, locale.toLocal8Bit());
     }
     void setMESSAGES(const QString& locale) {
-        QString(setlocale(LC_MESSAGES, locale.toLocal8Bit()));
+	setlocale(LC_MESSAGES, locale.toLocal8Bit());
     }
     void setMONETARY(const QString& locale) {
         setlocale(LC_MONETARY, locale.toLocal8Bit());
