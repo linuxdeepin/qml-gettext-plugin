@@ -47,6 +47,7 @@ public:
     void setDomain (const QString& s) {
 	if (!s.isEmpty()) {
 	    m_domain = s;
+	    updateBindTextdomain();
 	} else {
 	    qDebug () << "d-gettext: Ignore an empty domain name!";
 	}
@@ -55,10 +56,13 @@ public:
     const QString dirname() {
 	return m_dirname;
     }
+    void updateBindTextdomain() {
+	    bindtextdomain(m_domain.toLocal8Bit(), m_dirname.toLocal8Bit());
+    }
     void setDirname (const QUrl& s) {
 	if (s.isLocalFile()) {
 	    m_dirname = s.path();
-	    bindtextdomain(m_domain.toLocal8Bit(), m_dirname.toLocal8Bit());
+	    updateBindTextdomain();
 	} else {
 	    qDebug () << "d-gettext: Dirname is not supported non-local file";
 	}
