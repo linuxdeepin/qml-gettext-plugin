@@ -57,7 +57,11 @@ public:
 	return m_dirname;
     }
     void updateBindTextdomain() {
-	    bindtextdomain(m_domain.toLocal8Bit(), m_dirname.toLocal8Bit());
+	    if (m_dirname.length() == 0) {
+		bindtextdomain(m_domain.toLocal8Bit(), "/usr/share/locale");
+	    } else {
+		bindtextdomain(m_domain.toLocal8Bit(), m_dirname.toLocal8Bit());
+	    }
     }
     void setDirname (const QUrl& s) {
 	if (s.isLocalFile()) {
