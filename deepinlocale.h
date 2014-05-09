@@ -1,6 +1,7 @@
 /*This file is auto generate by dlib/dbus/proxyer. Don't edit it*/
 #include <libintl.h>
 #include <QtCore>
+#include <qdebug.h>
 
 #ifndef __LOCALE_H__
 #define __LOCALE_H__
@@ -54,7 +55,7 @@ public:
     }
 
     const QString dirname() {
-	return m_dirname;
+    return m_dirname;
     }
     void updateBindTextdomain() {
 	    if (m_dirname.length() == 0) {
@@ -84,27 +85,21 @@ public:
     }
 
     const QString guestLang() {
-	QString lang = qgetenv("LANGUAGE");
-	if (lang.isEmpty()) {
-	    lang = localeMESSAGES();
-	    if (lang.isEmpty()) {
-		lang = qgetenv("LANG");
-	    }
-	}
-	if (lang.isEmpty()) {
-	    return "en";
-	}
-	int index = lang.indexOf("_");
-	if (index == -1) {
-	    lang.indexOf(".");
-	    if (index == -1) {
-		lang.indexOf("@");
-		if (index == -1) {
-		    return lang;
-		}
-	    }
-	}
-	return lang.mid(0, index);
+        QString lang = qgetenv("LANGUAGE");
+        if (lang.isEmpty()) {
+                lang = localeMESSAGES();
+                if (lang.isEmpty()) {
+                lang = qgetenv("LANG");
+            }
+        }
+        if (lang.isEmpty()) {
+            return "en_US";
+        }
+        int index = lang.indexOf(".");
+        if (index == -1) {
+            return lang;
+        }
+        return lang.mid(0, index);
     }
 
 
